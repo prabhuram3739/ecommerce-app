@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const Product = require('../models/product');
 
-exports.createProduct = async (req, res) => {
+const createProduct = async (req, res) => {
   const { name, description, price, stock } = req.body;
 
   try {
@@ -28,4 +28,4 @@ const getAllProducts = asyncHandler(async (req, res) => {
   res.json(products);
 });
 
-module.exports = { getAllProducts };
+module.exports = { getAllProducts, createProduct };

@@ -20,12 +20,10 @@ io.on('connection', (socket) => {
   console.log('New connection');
 
   socket.on('orderStatusChange', (data) => {
-    // Notify user of order status change
     io.emit('updateOrderStatus', data);
   });
 
   socket.on('newOrder', (data) => {
-    // Notify admin of new order
     io.emit('newOrderNotification', data);
   });
 });
@@ -36,12 +34,9 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 
 // Database sync and server start
+const PORT = process.env.PORT || 5000; // Default to 5000 if PORT is not defined
 sequelize.sync().then(() => {
-  app.listen(process.env.PORT, () => {
-    console.log(`Server running on port ${process.env.PORT}`);
+  server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
   });
-});
-
-server.listen(5000, () => {
-  console.log('Server running on port 5000');
 });
