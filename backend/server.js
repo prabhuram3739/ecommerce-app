@@ -3,6 +3,7 @@ const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 const sequelize = require('./models');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -32,6 +33,7 @@ io.on('connection', (socket) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/admin', adminRoutes);
 app.use(cors({
   origin: 'http://localhost:5001', // Replace with your frontend URL
   methods: 'GET,POST,PUT,DELETE',
@@ -45,3 +47,8 @@ sequelize.sync().then(() => {
     console.log(`Server running on port ${PORT}`);
   });
 });
+// server.js or a similar file where you initialize Sequelize
+sequelize.sync({ alter: true }).then(() => {
+  console.log('Database synchronized');
+});
+

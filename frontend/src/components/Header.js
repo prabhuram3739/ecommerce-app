@@ -5,7 +5,7 @@ import '../App.css'; // Ensure any custom styles do not conflict with Bootstrap
 
 const Header = () => {
   return (
-    <header className="header bg-dark">
+    <header className="header">
       <div className="container d-flex justify-content-between align-items-center py-3">
         <div className="navbar-brand">
           <Link className="nav-link" to="/">E-Commerce</Link>
@@ -14,6 +14,9 @@ const Header = () => {
           <ul className="navbar-nav d-flex flex-row gap-3">
             <li className="nav-item">
               <Link to="/" className="nav-link">Home</Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/admin" className="nav-link">Admin</Link>
             </li>
             <li className="nav-item">
               <Link to="/login" className="nav-link">Login</Link>

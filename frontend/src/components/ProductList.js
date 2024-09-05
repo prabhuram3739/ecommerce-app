@@ -28,7 +28,7 @@ const ProductList = () => {
 
   const addToCart = async (productId) => {
     try {
-      await axios.post('http://localhost:5000/api/cart', { productId, quantity: 1 });
+      await axios.post('http://localhost:5000/api/add', { productId, quantity: 1 });
       alert('Product added to cart!');
     } catch (error) {
       console.error('Error adding product to cart:', error);

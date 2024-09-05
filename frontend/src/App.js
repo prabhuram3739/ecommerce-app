@@ -4,7 +4,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Header from './components/Header';
-import Footer from './components/Footer';
+import AdminPanel from './components/AdminPanel';
 import './App.css';
 // index.js or App.js
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -16,6 +16,7 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/admin" element={<AdminPanel />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>

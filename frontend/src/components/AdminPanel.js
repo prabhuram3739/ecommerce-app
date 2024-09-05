@@ -7,7 +7,6 @@ const AdminPanel = () => {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  // Fetch orders and products when the component loads
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -31,13 +30,15 @@ const AdminPanel = () => {
     fetchProducts();
   }, []);
 
-  // Handle product update
   const handleUpdateProduct = async (e) => {
     e.preventDefault();
     if (!selectedProduct) return;
 
     try {
-      await axios.put(`http://localhost:5000/api/admin/product/${selectedProduct._id}`, selectedProduct);
+      await axios.put(`http://localhost:5000/api/admin/product/${selectedProduct.id}`, selectedProduct);
+      // Fetch updated product list
+      const { data } = await axios.get('http://localhost:5000/api/products');
+      setProducts(data);
       alert('Product updated successfully');
       setSelectedProduct(null);
     } catch (error) {
@@ -51,55 +52,59 @@ const AdminPanel = () => {
 
       {/* Orders Table */}
       <h3>Orders</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Order ID</th>
-            <th>User</th>
-            <th>Total</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map(order => (
-            <tr key={order._id}>
-              <td>{order._id}</td>
-              <td>{order.user.name}</td>
-              <td>${order.total.toFixed(2)}</td>
-              <td>{order.status}</td>
+      <div className="table-container">
+        <table className="full-width-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>User</th>
+              <th>Total</th>
+              <th>Status</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {orders.map(order => (
+              <tr key={order.id}>
+                <td>{order.id}</td>
+                <td>{order.user.name}</td>
+                <td>${order.total.toFixed(2)}</td>
+                <td>{order.status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {/* Products Table */}
       <h3>Products</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Stock</th>
-            <th>Edit</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map(product => (
-            <tr key={product._id}>
-              <td>{product.name}</td>
-              <td>${product.price}</td>
-              <td>{product.stock}</td>
-              <td>
-                <button onClick={() => setSelectedProduct(product)}>Edit</button>
-              </td>
+      <div className="table-container">
+        <table className="full-width-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Edit</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {products.map(product => (
+              <tr key={product.id}>
+                <td>{product.name}</td>
+                <td>${product.price}</td>
+                <td>{product.stock}</td>
+                <td>
+                  <button onClick={() => setSelectedProduct(product)}>Edit</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {/* Edit Product Form */}
       {selectedProduct && (
-        <form onSubmit={handleUpdateProduct}>
+        <form onSubmit={handleUpdateProduct} className="edit-form">
           <h3>Edit Product</h3>
           <input
             type="text"
