@@ -11,7 +11,7 @@ const AdminPanel = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const { data } = await axios.get('/api/admin/orders');
+        const { data } = await axios.get('http://localhost:5000/api/admin/orders');
         setOrders(data);
       } catch (error) {
         console.error('Error fetching orders:', error);
@@ -20,7 +20,7 @@ const AdminPanel = () => {
 
     const fetchProducts = async () => {
       try {
-        const { data } = await axios.get('/api/products');
+        const { data } = await axios.get('http://localhost:5000/api/products');
         setProducts(data);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -37,7 +37,7 @@ const AdminPanel = () => {
     if (!selectedProduct) return;
 
     try {
-      await axios.put(`/api/admin/product/${selectedProduct._id}`, selectedProduct);
+      await axios.put(`http://localhost:5000/api/admin/product/${selectedProduct._id}`, selectedProduct);
       alert('Product updated successfully');
       setSelectedProduct(null);
     } catch (error) {

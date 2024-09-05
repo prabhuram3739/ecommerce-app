@@ -32,6 +32,11 @@ io.on('connection', (socket) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
+app.use(cors({
+  origin: 'http://localhost:5001', // Replace with your frontend URL
+  methods: 'GET,POST,PUT,DELETE',
+  credentials: true
+}));
 
 // Database sync and server start
 const PORT = process.env.PORT || 5000; // Default to 5000 if PORT is not defined

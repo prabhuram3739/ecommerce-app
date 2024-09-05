@@ -1,17 +1,29 @@
-// models/cartModel.js
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database'); // Adjust path if necessary
 
-const cartItemSchema = mongoose.Schema({
-  product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
-  quantity: { type: Number, required: true },
-});
-
-const cartSchema = mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  items: [cartItemSchema],
+const Cart = sequelize.define('Cart', {
+  quantity: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  productId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'Products', // Name of the product model/table
+      key: 'id',
+    },
+    allowNull: false,
+  },
+  userId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'Users', // Name of the user model/table
+      key: 'id',
+    },
+    allowNull: true,
+  },
 }, {
   timestamps: true,
 });
 
-const Cart = mongoose.model('Cart', cartSchema);
 module.exports = Cart;

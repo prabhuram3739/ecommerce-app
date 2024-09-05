@@ -16,9 +16,10 @@ const ProductList = () => {
 
   const fetchProducts = async () => {
     try {
-      const { data } = await axios.get('/api/products', {
+      const { data } = await axios.get('http://localhost:5000/api/products', {
         params: { name: searchTerm, minPrice, maxPrice, available },
       });
+      console.log("Data:", data);
       setProducts(data);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -27,7 +28,7 @@ const ProductList = () => {
 
   const addToCart = async (productId) => {
     try {
-      await axios.post('/api/cart', { productId, quantity: 1 });
+      await axios.post('http://localhost:5000/api/cart', { productId, quantity: 1 });
       alert('Product added to cart!');
     } catch (error) {
       console.error('Error adding product to cart:', error);
@@ -45,7 +46,7 @@ const ProductList = () => {
       </label>
       <h2>Product List</h2>
       <div className="row">
-        {products.map((product) => (
+        {products?.map((product) => (
           <div className="col-md-4" key={product.id}>
             <div className="card">
               <div className="card-body">

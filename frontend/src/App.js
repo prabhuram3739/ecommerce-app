@@ -6,6 +6,9 @@ import Register from './pages/Register';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import './App.css';
+// index.js or App.js
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 function App() {
   return (
@@ -16,7 +19,6 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>
-      <Footer />
     </Router>
   );
 }

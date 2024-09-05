@@ -16,15 +16,24 @@ const createProduct = async (req, res) => {
 // @route   GET /api/products
 // @access  Public
 const getAllProducts = asyncHandler(async (req, res) => {
+  // Extract the filter options from query parameters
   const { name, minPrice, maxPrice, available } = req.query;
 
+  // Create an object to hold the filter criteria
   const filter = {};
 
-  if (name) filter.name = { $regex: name, $options: 'i' };
-  if (minPrice || maxPrice) filter.price = { $gte: minPrice || 0, $lte: maxPrice || Number.MAX_VALUE };
-  if (available) filter.stock = { $gt: 0 };
+  // Set filters for product name, price range, and stock availability
+  if (name) filter.name = { [Sequelize.Op.iLike]: `%${name}%` }; // Adjust for Sequelize syntax
+  if (minPrice || maxPrice) filter.price = { 
+    [Sequelize.Op.gte]: minPrice || 0, 
+    [Sequelize.Op.lte]: maxPrice || Number.MAX_VALUE 
+  };
+  if (available) filter.stock = { [Sequelize.Op.gt]: 0 };
 
-  const products = await Product.find(filter);
+  // Query the products table based on the filter criteria
+  const products = await Product.findAll({ where: filter });
+
+  // Send the resulting product list as a response
   res.json(products);
 });
 
