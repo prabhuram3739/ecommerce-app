@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Header from './components/Header';
 import AdminPanel from './components/AdminPanel';
+import ErrorBoundary from './ErrorBoundary';
 import './App.css';
 // index.js or App.js
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -16,7 +17,8 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/admin" element={<AdminPanel />} />
+        
+        <Route path="/admin" element={<ErrorBoundary><AdminPanel /></ErrorBoundary>} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>

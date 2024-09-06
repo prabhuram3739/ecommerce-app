@@ -7,6 +7,7 @@ const adminRoutes = require('./routes/adminRoutes');
 const sequelize = require('./models');
 const http = require('http');
 const { Server } = require('socket.io');
+require('./models/associations'); // Load associations
 
 require('dotenv').config();
 
