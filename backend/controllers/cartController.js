@@ -1,79 +1,100 @@
 // controllers/cartController.js
 const asyncHandler = require('express-async-handler');
 const Cart = require('../models/cartModel');
-const Order = require('../models/orders');
-const Product = require('../models/products');
+const Order = require('../models/order');
+const Product = require('../models/product');
+const OrderItems = require('../models/orderItems');
+const User = require('../models/user'); // Added to fetch user details
 
 // Add to cart
 const addToCart = asyncHandler(async (req, res) => {
-  const { productId, quantity } = req.body;
-  const product = await Product.findById(productId);
+  const { productId, quantity, userId } = req.body;
+  const product = await Product.findByPk(productId);
 
   if (!product || product.stock < quantity) {
     res.status(400);
     throw new Error('Product unavailable or insufficient stock');
   }
 
-   // Find the user's cart or create one if it doesn't exist
-   let cart = await Cart.findOne({ user: req.user._id });
-   if (!cart) {
-     cart = await Cart.create({ user: req.user._id, items: [] });
-   }
- 
-   // Add or update the product in the cart
-   const itemIndex = cart.items.findIndex(item => item.product.toString() === productId);
-   if (itemIndex >= 0) {
-     cart.items[itemIndex].quantity += quantity;
-   } else {
-     cart.items.push({ product: productId, quantity });
-   }
- 
-   await cart.save();
-   res.status(201).json(cart);
- });
+  // Check if the cart item already exists
+  const existingCartItem = await Cart.findOne({
+    where: { productId, userId }
+  });
 
-// Checkout
-const checkout = asyncHandler(async (req, res) => {
-    const cart = await Cart.findOne({ user: req.user._id }).populate('items.product');
-  
-    if (!cart || cart.items.length === 0) {
-      res.status(400);
-      throw new Error('Cart is empty');
+  if (existingCartItem) {
+    // If it exists, update the quantity
+    existingCartItem.quantity += quantity;
+    await existingCartItem.save();
+    return res.status(200).json({ message: 'Item quantity updated in cart' }); // Ensure only one response
+  } else {
+    try {
+      const cartItem = await Cart.create({
+        productId,
+        quantity,
+        userId
+      });
+      return res.status(201).json(cartItem); // Ensure only one response
+    } catch (error) {
+      console.error('Error creating cart item:', error);
+      res.status(500).json({ message: 'Internal server error' });
     }
-  
-    const orderItems = cart.items.map(item => ({
-      product: item.product._id,
+  }
+});
+
+
+ // Get cart items function
+const getCartItems = asyncHandler(async (req, res) => {
+  const { userId } = req.query;
+  const cartItems = await Cart.findAll({
+    where: { userId },
+    include: [
+      {
+        model: Product,
+        attributes: ['name', 'price'],
+      },
+      {
+        model: User,
+        attributes: ['username'],
+      }
+    ]
+  });
+  res.json(cartItems);
+});
+
+// @desc Checkout and create an order
+// @route POST /api/checkout
+// @access Private/User
+const checkout = asyncHandler(async (req, res) => {
+  const { userId } = req.body;
+
+  // Find cart items for the user
+  const cartItems = await Cart.findAll({ where: { userId }, include: Product });
+
+  if (!cartItems.length) {
+    res.status(400);
+    throw new Error('Your cart is empty');
+  }
+
+  // Create a new order
+  const order = await Order.create({
+    userId,
+    status: 'Pending',
+  });
+
+  // Add items to the order
+  for (let item of cartItems) {
+    await OrderItems.create({
+      orderId: order.id,
+      productId: item.product.id,
       quantity: item.quantity,
       price: item.product.price,
-    }));
-  
-    // Create the order
-    const order = await Order.create({
-      user: req.user._id,
-      items: orderItems,
-      total: orderItems.reduce((acc, item) => acc + item.quantity * item.price, 0),
     });
-  
-    // Decrease product stock
-    for (const item of orderItems) {
-      const product = await Product.findById(item.product);
-      product.stock -= item.quantity;
-      await product.save();
-    }
-  
-    // Clear the cart
-    cart.items = [];
-    await cart.save();
-  
-    res.status(201).json(order);
-  });
-  
-  // @desc Get user's order history
-  // @route GET /api/cart/orders
-  // @access Private
-  const getOrderHistory = asyncHandler(async (req, res) => {
-    const orders = await Order.find({ user: req.user._id }).populate('items.product');
-    res.json(orders);
-  });
+  }
 
-module.exports = { addToCart, checkout, getOrderHistory };
+  // Clear the cart after checkout
+  await Cart.destroy({ where: { userId } });
+
+  res.status(201).json({ message: 'Order placed successfully!' });
+});
+
+module.exports = { addToCart, getCartItems, checkout };

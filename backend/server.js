@@ -4,6 +4,7 @@ const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const cartRoutes = require('./routes/cartRoutes');
 const sequelize = require('./models');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -35,6 +36,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);
+// Other middlewares and routes
+app.use('/api', cartRoutes);
 app.use(cors({
   origin: 'http://localhost:5001', // Replace with your frontend URL
   methods: 'GET,POST,PUT,DELETE',

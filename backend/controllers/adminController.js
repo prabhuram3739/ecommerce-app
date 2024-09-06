@@ -9,7 +9,17 @@ const User = require('../models/user');
 // @access Private/Admin
 const getAllOrders = asyncHandler(async (req, res) => {
   const orders = await Order.findAll({
-    include: [{ all: true }], // Check if this is correct; adjust the include options accordingly
+    include: [
+      {
+        model: User,
+        attributes: ['name', 'email']
+      },
+      {
+        model: Product,
+        attributes: ['name', 'price'],
+        through: { attributes: ['quantity'] } // Include attributes from the through table if needed
+      }
+    ]
   });
   res.json(orders);
 });

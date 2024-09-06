@@ -1,7 +1,12 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database'); // Adjust path if necessary
+const sequelize = require('./index'); // Adjust path if necessary
 
 const Cart = sequelize.define('Cart', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
   quantity: {
     type: DataTypes.INTEGER,
     allowNull: false,

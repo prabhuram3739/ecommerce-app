@@ -4,6 +4,7 @@ import axios from 'axios';
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
+  const userId = 4; // Replace with actual user ID if dynamic
 
   useEffect(() => {
     fetchCartItems();
@@ -11,7 +12,7 @@ const Cart = () => {
 
   const fetchCartItems = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/cart');
+      const response = await axios.get('http://localhost:5000/api/cart?userId=${userId}');
       setCartItems(response.data);
     } catch (error) {
       console.error('Error fetching cart items:', error);
@@ -20,7 +21,7 @@ const Cart = () => {
 
   const handleCheckout = async () => {
     try {
-      await axios.post('http://localhost:5000/api/checkout', { items: cartItems });
+      await axios.post('http://localhost:5000/api/checkout', { userId  });
       alert('Order placed successfully!');
       setCartItems([]); // Clear cart after successful order
     } catch (error) {
@@ -32,9 +33,9 @@ const Cart = () => {
     <div className="container">
       <h2>Your Cart</h2>
       <ul className="list-group">
-        {cartItems.map((item) => (
-          <li key={item.id} className="list-group-item">
-            {item.product.name} - ${item.product.price} x {item.quantity}
+        {cartItems?.map((item) => (
+          <li key={item?.id} className="list-group-item">
+            {item?.product?.name} - ${item?.product?.price} x {item?.quantity}
           </li>
         ))}
       </ul>

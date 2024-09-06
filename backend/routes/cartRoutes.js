@@ -1,16 +1,11 @@
 // routes/cartRoutes.js
 const express = require('express');
-const { addToCart, checkout, getOrderHistory } = require('../controllers/cartController');
+const { addToCart, getCartItems, checkout } = require('../controllers/cartController');
 const { protect } = require('../middleware/authMiddleware');
 const router = express.Router();
 
-// Add product to cart
-router.post('/add', protect, addToCart);
-
-// Checkout
-router.post('/checkout', protect, checkout);
-
-// Get order history
-router.get('/orders', protect, getOrderHistory);
+router.post('/add', addToCart); // Add to cart
+router.get('/cart', getCartItems); // Fetch cart items
+router.post('/checkout', checkout); // Checkout and create an order
 
 module.exports = router;

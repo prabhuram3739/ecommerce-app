@@ -63,12 +63,12 @@ const AdminPanel = () => {
             </tr>
           </thead>
           <tbody>
-            {orders.map(order => (
-              <tr key={order.id}>
-                <td>{order.id}</td>
-                <td>{order.user.name}</td>
-                <td>${order.total.toFixed(2)}</td>
-                <td>{order.status}</td>
+            {orders?.map(order => (
+              <tr key={order?.id}>
+                <td>{order?.id}</td>
+                <td>{order?.user?.name}</td>
+                <td>${order?.total?.toFixed(2)}</td>
+                <td>{order?.status}</td>
               </tr>
             ))}
           </tbody>
@@ -88,11 +88,11 @@ const AdminPanel = () => {
             </tr>
           </thead>
           <tbody>
-            {products.map(product => (
-              <tr key={product.id}>
-                <td>{product.name}</td>
-                <td>${product.price}</td>
-                <td>{product.stock}</td>
+            {products?.map(product => (
+              <tr key={product?.id}>
+                <td>{product?.name}</td>
+                <td>${product?.price}</td>
+                <td>{product?.stock}</td>
                 <td>
                   <button onClick={() => setSelectedProduct(product)}>Edit</button>
                 </td>
